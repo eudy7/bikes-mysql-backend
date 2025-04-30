@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: 🚀 Deploy Backend to Docker Hub
 
 on:
   push:
@@ -6,25 +6,21 @@ on:
       - master
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: 🔐 Iniciar sesión en Docker Hub
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USER }}
+          username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USER }}/users-mysql-backend:latest
+      - name: 🏗️ Construir imagen Docker
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/bikes-mysql-backend .
+
+      - name: 📤 Subir imagen a Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/bikes-mysql-backend
