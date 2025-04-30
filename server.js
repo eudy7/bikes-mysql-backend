@@ -1,11 +1,13 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
-const userRoutes = require('./routes');
+const bikeRoutes = require('./routes');
 
-app.use(cors());
 app.use(express.json());
 
-app.use('/api', userRoutes);
+app.use('/api', bikeRoutes);
 
-module.exports = app;
+const PORT = 8081;
+
+app.listen(PORT, () => {
+  console.log(`🚴 Servidor de bicicletas escuchando en http://localhost:${PORT}`);
+});
