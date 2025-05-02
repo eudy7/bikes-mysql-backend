@@ -1,7 +1,7 @@
 const db = require('../models');
 const Bike = db.Bike;
 
-// Obtener todas las bicicletas
+// GET - Obtener todas las bicicletas
 const getBikes = async (req, res) => {
   try {
     const bikes = await Bike.findAll();
@@ -11,7 +11,7 @@ const getBikes = async (req, res) => {
   }
 };
 
-// Agregar una nueva bicicleta
+// POST - Agregar una nueva bicicleta
 const addBike = async (req, res) => {
   try {
     const { brand, model, price, description } = req.body;
@@ -24,7 +24,47 @@ const addBike = async (req, res) => {
   }
 };
 
+// PUT - Actualizar una bicicleta
+const updateBike = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { brand, model, price, description } = req.body;
+
+    const [updated] = await Bike.update(
+      { brand, model, price, description },
+      { where: { id } }
+    );
+
+    if (updated === 0) {
+      return res.status(404).json({ error: 'Bicicleta no encontrada' });
+    }
+
+    const updatedBike = await Bike.findByPk(id);
+    res.json(updatedBike);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar bicicleta' });
+  }
+};
+
+// DELETE - Eliminar una bicicleta
+const deleteBike = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Bike.destroy({ where: { id } });
+
+    if (deleted === 0) {
+      return res.status(404).json({ error: 'Bicicleta no encontrada' });
+    }
+
+    res.json({ message: '✅ Bicicleta eliminada' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar bicicleta' });
+  }
+};
+
 module.exports = {
   getBikes,
-  addBike
+  addBike,
+  updateBike,
+  deleteBike
 };
