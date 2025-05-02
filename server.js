@@ -1,12 +1,19 @@
 const express = require('express');
+const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const bikeRoutes = require('./routes');
 const bikeController = require('./controllers/bikeController');
 
 const app = express();
+
+app.use(cors({
+  origin: 'https://bikes-mysql-frontend.onrender.com'
+}));
+
 app.use(express.json());
 
+// ✅ 4. Configuración de multer
 const storage = multer.diskStorage({
   destination: 'uploads/',
   filename: (req, file, cb) => {
